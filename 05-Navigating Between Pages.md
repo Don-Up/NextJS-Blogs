@@ -12,7 +12,7 @@ The `Link` component is used to create client-side transitions between routes, w
 
 Create a navigation link in your component:
 
-![image-20240713163257643](C:\Users\yexudong\Desktop\新建文件夹\img\05-Navigating Between Pages\image-20240713163257643.png)
+![image-20240713164112715](assets/image-20240713164112715.png)
 
 ```jsx
 import Link from 'next/link';
