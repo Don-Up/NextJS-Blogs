@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Next.js supports streaming, allowing you to send parts of a response to the client as soon as they are available. This can significantly improve the user experience by reducing the time it takes for content to be displayed.
+Next.js supports streaming, allowing you to **send parts of a response to the client as soon as they are available**. This can significantly improve the user experience by reducing the time it takes for content to be displayed.
 
 ## Benefits of Streaming
 
@@ -11,14 +11,18 @@ Next.js supports streaming, allowing you to send parts of a response to the clie
 
 ## Implementation
 
-To implement streaming, use the `React.lazy` function to lazy-load components and the `Suspense` component to display fallback content while loading.
+To implement streaming, use the `React.lazy` function to **lazy-load components** and the `Suspense` component to **display fallback content** while loading.
 
 ### Example
 
-```javascript
+```jsx
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
+// Dynamic import of the LazyComponent with suspense support
+// P1-import('..'): Dynamically import the LazyComponent
+// P2-{suspense: true,}: Enable suspense mode for the imported component
+// Ret-LazyComponent: Assign the dynamically imported component to LazyComponent
 const LazyComponent = dynamic(() => import('../components/LazyComponent'), {
   suspense: true,
 });
@@ -27,6 +31,7 @@ export default function Page() {
   return (
     <div>
       <h1>My Page</h1>
+      {/* Suspense component with a fallback while LazyComponent is loading */}
       <Suspense fallback={<div>Loading...</div>}>
         <LazyComponent />
       </Suspense>

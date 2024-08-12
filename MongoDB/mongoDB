@@ -1,0 +1,152 @@
+# MongoDB
+
+MongoDB is a **NoSQL** database designed for flexibility and scalability, using a document-oriented data model. Data is stored in JSON-like BSON (Binary JSON) format, allowing for nested structures and arrays. Unlike traditional relational databases, MongoDB doesn't require a predefined schema, making it ideal for handling unstructured data. It supports indexing, aggregation, and horizontal scaling through sharding. MongoDB's flexible data model, combined with features like replication and high availability, makes it a popular choice for modern applications requiring rapid development, scalability, and performance. It integrates seamlessly with various programming languages and platforms, enhancing its versatility in diverse applications.
+
+## 1. Install MongoDB and Compass
+
+**Install MongoDB**: Download and install MongoDB Community Edition from [MongoDB Community](https://www.mongodb.com/try/download/community).
+
+**Install Compass**: Download and install MongoDB Compass from [MongoDB Compass](https://www.mongodb.com/products/compass).
+
+> Compass: Use Compass to connect to your MongoDB server and manage your databases through a user-friendly interface.
+
+## 2. Install MongoDB Client Library
+
+Install the MongoDB client library `mongodb` and `dotenv` in your project.
+
+```bash
+npm install mongodb dotenv
+```
+
+> mongodb: Use this library to interact with your MongoDB database from your Node.js application.
+
+> dotenv: This library allows you to load environment variables from a `.env` file into `process.env`, helping manage sensitive data securely.
+
+## 3. Configure Environment Variables
+
+Create a `.env` file in the root directory of your project and add the MongoDB connection string.
+
+```bash
+MONGODB_URI=mongodb://localhost:27017/todos
+```
+
+## 4. Open Compass, Connect to the Database, and Create a Collection
+
+<img src="assets/image-20240714152322299.png" alt="image-20240714152322299" style="zoom:80%;" />
+
+![image-20240714153048702](assets/image-20240714153048702.png)
+
+
+
+## 5. Create Database Connection
+
+Create a new file `database/mongo.js` to manage the MongoDB connection.
+
+```js
+// database/mongo.js
+import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
+
+// Load environment variables from a .env file into process.env
+dotenv.config();
+
+// Create a new MongoClient instance with the MongoDB URI from environment variables
+const client = new MongoClient(process.env.MONGODB_URI);
+
+async function connectToDatabase() {
+    if (!client.topology || !client.topology.isConnected()) {
+        // Connect to the MongoDB server if not already connected
+        await client.connect();
+    }
+    return client.db('todos');  // Use the 'todos' database
+}
+
+// Export the connectToDatabase function as the default export
+export default connectToDatabase;
+```
+
+
+
+## 6. Update API Routes
+
+```js
+// pages/api/todos.js
+import connectToDatabase from '../../database/mongo';
+import { ObjectId } from 'mongodb';  // Import ObjectId
+
+export default async function handler(req, res) {
+    const db = await connectToDatabase();
+    // Get the 'todos' collection from the database
+    const collection = db.collection('todos');
+
+    if (req.method === 'GET') {
+        try {
+            // Retrieve all documents from the 'todos' collection
+            const todos = await collection.find({}).toArray();
+            // Convert _id to id and map the todos to include id instead of _id
+            const todosWithId = todos.map(todo => ({
+                id: todo._id.toString(),
+                text: todo.text
+            }));
+            res.status(200).json({ todos: todosWithId });
+        } catch (err) {
+            // Handle errors and send a 500 response with the error message
+            res.status(500).json({ error: err.message });
+        }
+    } else if (req.method === 'POST') {
+        const { text } = req.body;
+        if (!text) {
+            return res.status(400).json({ error: 'Text is required' });
+        }
+        try {
+            // Insert a new document with the text field into the 'todos' collection
+            const result = await collection.insertOne({ text });
+            res.status(201).json({ id: result.insertedId.toString(), text });
+        } catch (err) {
+            console.error('Error inserting todo:', err);
+            // Handle errors and send a 500 response with the error message
+            res.status(500).json({ error: err.message });
+        }
+    } else if (req.method === 'DELETE') {
+        const { id } = req.body;
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid ID format' });
+        }
+        try {
+            // Delete the document with the specified _id from the 'todos' collection
+            const result = await collection.deleteOne({ _id: new ObjectId(id) });
+            if (result.deletedCount === 1) {
+                res.status(200).json({ message: 'Todo deleted' });
+            } else {
+                res.status(404).json({ message: 'Todo not found' });
+            }
+        } catch (err) {
+            // Handle errors and send a 500 response with the error message
+            res.status(500).json({ error: err.message });
+        }
+    } else {
+        // Handle unsupported HTTP methods
+        res.status(405).json({ message: 'Method not allowed' });
+    }
+}
+```
+
+| Method                                            | Description                                                  |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| `find(filter)`                                    | Retrieves documents matching the specified filter.           |
+| `findOne(filter)`                                 | Retrieves a single document matching the specified filter.   |
+| `insertOne(doc)`                                  | Inserts a single document into the collection.               |
+| `insertMany(docs)`                                | Inserts multiple documents into the collection.              |
+| `updateOne(filter, update)`                       | Updates a single document matching the filter with the specified update. |
+| `updateMany(filter, update)`                      | Updates multiple documents matching the filter with the specified update. |
+| `deleteOne(filter)`                               | Deletes a single document matching the filter.               |
+| `deleteMany(filter)`                              | Deletes multiple documents matching the filter.              |
+| `replaceOne(filter, replacement)`                 | Replaces a single document matching the filter with the specified replacement. |
+| `countDocuments(filter)`                          | Counts the number of documents matching the filter.          |
+| `distinct(field, filter)`                         | Finds the distinct values for a specified field across a collection. |
+| `aggregate(pipeline)`                             | Performs aggregation operations using the specified pipeline. |
+| `createIndex(fieldOrSpec, options)`               | Creates an index on the collection.                          |
+| `dropIndex(indexName)`                            | Drops an index from the collection.                          |
+| `findOneAndUpdate(filter, update, options)`       | Finds a single document and updates it, returning the original or updated document. |
+| `findOneAndDelete(filter, options)`               | Finds a single document and deletes it, returning the deleted document. |
+| `findOneAndReplace(filter, replacement, options)` | Finds a single document and replaces it, returning the original or replaced document. |

@@ -6,7 +6,12 @@ Partial prerendering in Next.js allows you to statically generate parts of a pag
 
 ## Incremental Static Regeneration (ISR)
 
-ISR enables updating static content without rebuilding the entire site. You can use ISR to refresh data at a specified interval.
+ISR enables **updating static content without rebuilding the entire site**. You can use ISR to refresh data at a specified interval.
+
+> Main Differences between ISR and SSG
+>
+> * **ISR**: Updates static content incrementally, providing flexibility and performance.
+> * **SSG (Static Site Generation)**: Generates static pages at build time and requires a full rebuild to update content.
 
 ### Example
 

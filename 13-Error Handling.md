@@ -94,7 +94,7 @@ export default ErrorBoundary;
 
 Wrap your component with the error boundary:
 
-```javascript
+```jsx
 <ErrorBoundary>
   <MyComponent />
 </ErrorBoundary>

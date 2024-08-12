@@ -12,6 +12,8 @@ You can choose between SQL (e.g., PostgreSQL, MySQL) or NoSQL (e.g., MongoDB) da
 
 ### Example using PostgreSQL with Prisma:
 
+> Prisma is an open-source ORM (Object-Relational Mapping) tool for Node.js and TypeScript, providing type-safe database access and simplifying database queries. It supports various databases like PostgreSQL, MySQL, SQLite, and MongoDB, enhancing developer productivity and ensuring data integrity.
+
 1. **Install Prisma**:
    ```bash
    npm install @prisma/client

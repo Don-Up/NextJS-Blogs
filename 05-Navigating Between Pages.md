@@ -33,9 +33,11 @@ export default function HomePage() {
 
 You can apply styles to the `Link` component's child element:
 
+![image-20240713164806920](assets/image-20240713164806920.png)
+
 ```javascript
 <Link href="/about">
-  <a className="text-blue-500">About Page</a>
+  <h2 className="text-blue-500">About Page</h2>
 </Link>
 ```
 
@@ -69,6 +71,10 @@ export default function HomePage() {
 ## Customizing the `Link` Component
 
 You can pass additional attributes to the `Link` component, such as `replace`, `scroll`, and `shallow`.
+
+1. `replace`: Replaces the current history state instead of adding a new entry.
+2. `scroll`: Scrolls to the top of the page after navigation if set to `true`.
+3. `shallow`:  Updates the path without running data fetching methods again.
 
 ### Example
 

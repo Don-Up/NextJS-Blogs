@@ -10,7 +10,7 @@ Using semantic HTML elements improves accessibility by providing meaningful stru
 
 ### Example
 
-```javascript
+```jsx
 export default function HomePage() {
   return (
     <main>
@@ -34,13 +34,15 @@ export default function HomePage() {
 }
 ```
 
+
+
 ## ARIA (Accessible Rich Internet Applications)
 
 ARIA roles and properties enhance accessibility by providing additional information to screen readers.
 
 ### Example
 
-```javascript
+```jsx
 export default function Button() {
   return (
     <button aria-label="Close">
@@ -58,7 +60,7 @@ Ensure all interactive elements are keyboard accessible.
 
 ### Example
 
-```javascript
+```jsx
 export default function Modal() {
   return (
     <div role="dialog" aria-modal="true">
